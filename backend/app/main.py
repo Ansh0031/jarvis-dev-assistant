@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.routers import auth
 
 app = FastAPI(
     title="JARVIS API",
@@ -6,10 +7,12 @@ app = FastAPI(
     version="0.1.0"
 )
 
+app.include_router(auth.router)
+
 @app.get("/")
 def root():
     return {
-        "message": "JARVIS is online",
+        "message": "JARVIS is online 🤖",
         "status": "ok",
         "version": "0.1.0"
     }
