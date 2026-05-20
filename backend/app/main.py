@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth
+from app.routers import auth, chat
 
-app = FastAPI(title="JARVIS API", version="0.1.0")
+app = FastAPI(
+    title="JARVIS API",
+    description="AI-powered developer assistant",
+    version="0.1.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,10 +17,11 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(chat.router)
 
 @app.get("/")
 def root():
-    return {"message": "JARVIS is online"}
+    return {"message": "JARVIS is online", "status": "ok"}
 
 @app.get("/health")
 def health():
