@@ -2,21 +2,29 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
-from dotenv import load_dotenv
 import os
 import sys
 
-# Add backend folder to Python path
+# Add backend to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'app', '.env'))
+# Load .env for local development
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
 
 config = context.config
+
+# Get DATABASE_URL from environment — works both locally and in Docker
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    config.set_main_option("sqlalchemy.url", database_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Import ALL your models here
 from app.database import Base
 from app.models.user import User, Conversation, Message
 
